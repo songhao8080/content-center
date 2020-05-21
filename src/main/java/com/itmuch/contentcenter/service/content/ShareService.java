@@ -28,33 +28,48 @@ public class ShareService {
     @Autowired
     private RestTemplate restTemplate;
 
-    @Resource
-    private DiscoveryClient discoveryClient;
+
 
     public ShareDTO findById(Integer id) {
 
 
         Share share = shareMapper.selectByPrimaryKey(id);
         log.info(share.toString());
-        // 获取用户中心所有实例
-        List<ServiceInstance> instances = discoveryClient.getInstances("user-center");
+
 
         /**
          * 获取用户中心所有的实例地址
          */
+        /**
+         *
+         * // 获取用户中心所有实例
+         *         List<ServiceInstance> instances = discoveryClient.getInstances("user-center");
+         @Resource
+         private DiscoveryClient discoveryClient;
         List<String> targetUrls = instances.stream()
                 .map(instance -> instance.getUri().toString() + "/users/{id}")
                 .collect(Collectors.toList());
 
+        log.info("所有的实例 {}", targetUrls.toArray());
         int randomInt = ThreadLocalRandom.current().nextInt(targetUrls.size());
 
         String targetUrl = targetUrls.get(randomInt);
-        log.info("获取的 TargetUrl", targetUrl);
-        Integer userId = share.getUserId();
+        log.info("获取的 TargetUrl: {}", targetUrl);
+         Integer userId = share.getUserId();
 
         log.info("userId {}", userId);
+         */
+
+        /**
+         * 加入 Ribbon
+         * 1. 在 restTemplate 加入 @LoadBalanced，这样ribbon就可以使用负载均衡
+         * 2. "http://user-center/users/{id}" Ribbon 会解析 user-center，调用的是Nacos上的服务
+         *
+         */
+
+        Integer userId = share.getUserId();
         UserDTO userDTO = restTemplate.getForObject(
-                targetUrl,
+                "http://user-center/users/{id}",
                 UserDTO.class, userId
         );
         log.info(userDTO.toString());
