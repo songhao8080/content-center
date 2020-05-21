@@ -16,8 +16,8 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ShareDTO implements Serializable {
-    private static final long serialVersionUID = -7309969808604951038L;
+public class ShareDTO {
+
     /**
      * id
      */

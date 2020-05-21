@@ -8,11 +8,14 @@ import com.itmuch.contentcenter.domain.entity.content.Share;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -23,15 +26,27 @@ public class ShareService {
     @Autowired
     private RestTemplate restTemplate;
 
+    @Resource
+    private DiscoveryClient discoveryClient;
+
     public ShareDTO findById(Integer id){
 
 
         Share share = shareMapper.selectByPrimaryKey(id);
         log.info(share.toString());
+        // 获取用户中心所有实例
+        List<ServiceInstance> instances = discoveryClient.getInstances("user-center");
+
+        String targetUrl = instances.stream()
+                .map(instance -> instance.getUri().toString() + "/users/{id}")
+                .findFirst().orElseThrow(() -> new IllegalArgumentException("未找到实例"));
+
+        log.info("请求地址{}",targetUrl);
 
         Integer userId = share.getUserId();
+        log.info("userId {}",userId);
         UserDTO userDTO = restTemplate.getForObject(
-                "http://localhost:8080/users/{id}",
+                targetUrl,
                 UserDTO.class,userId
         );
         log.info(userDTO.toString());
