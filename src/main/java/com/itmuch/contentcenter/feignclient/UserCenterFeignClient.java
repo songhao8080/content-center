@@ -6,7 +6,8 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-@FeignClient(name = "user-center",configuration = UserCenterFeignConfigration.class)
+//@FeignClient(name = "user-center",configuration = UserCenterFeignConfigration.class)
+@FeignClient(name = "user-center")
 public interface UserCenterFeignClient {
     /**
      * 声明式 http 客户端 name 表示的请求的应用

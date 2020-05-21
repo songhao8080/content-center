@@ -29,3 +29,11 @@ user-center:
 logging:
   level:
     com.itmuch.contentcenter.feignclient.UserCenterFeignClient: debug
+
+
+feign:
+  client:
+    config:
+      # 想要调用的微服务名
+      user-center:
+        loggerLevel: full
