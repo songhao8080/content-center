@@ -5,11 +5,17 @@ spring:
       username: root
       password: root
       driver-class-name: com.mysql.cj.jdbc.Driver
+  application:
+    name: content-center
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
 server:
   port: 8010
-
 
 # mybatis 打印 sql 日志
 mybatis:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
