@@ -1,1 +1,28 @@
-spring:  datasource:    url: jdbc:mysql://localhost:3306/content_center?useSSL=false&serverTimezone=UTC&useUnicode=true&characterEncoding=UTF-8    hikari:      username: root      password: root      driver-class-name: com.mysql.cj.jdbc.Driver  application:    name: content-center  cloud:    nacos:      discovery:        server-addr: localhost:8848        ip: 127.0.0.1server:  port: 8010# mybatis 打印 sql 日志mybatis:  configuration:    log-impl: org.apache.ibatis.logging.stdout.StdOutImpluser-center:  ribbon:    NFLoadBalancerRuleClassName: com.netflix.loadbalancer.RandomRule
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/content_center?useSSL=false&serverTimezone=UTC&useUnicode=true&characterEncoding=UTF-8
+    hikari:
+      username: root
+      password: root
+      driver-class-name: com.mysql.cj.jdbc.Driver
+  application:
+    name: content-center
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+        ip: 127.0.0.1
+
+
+server:
+  port: 8010
+
+# mybatis 打印 sql 日志
+mybatis:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+# 属性配置 Ribbon 随机方式
+user-center:
+  ribbon:
+    NFLoadBalancerRuleClassName: com.netflix.loadbalancer.RandomRule

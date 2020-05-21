@@ -5,6 +5,7 @@ import com.itmuch.contentcenter.dao.content.ShareMapper;
 import com.itmuch.contentcenter.domain.dto.content.ShareDTO;
 import com.itmuch.contentcenter.domain.dto.user.UserDTO;
 import com.itmuch.contentcenter.domain.entity.content.Share;
+import com.itmuch.contentcenter.feignclient.UserCenterFeignClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,7 @@ public class ShareService {
     private ShareMapper shareMapper;
 
     @Autowired
-    private RestTemplate restTemplate;
+    private UserCenterFeignClient userCenterFeignClient;
 
 
 
@@ -65,13 +66,17 @@ public class ShareService {
          * 1. 在 restTemplate 加入 @LoadBalanced，这样ribbon就可以使用负载均衡
          * 2. "http://user-center/users/{id}" Ribbon 会解析 user-center，调用的是Nacos上的服务
          *
+         * UserDTO userDTO = restTemplate.getForObject(
+         *                 "http://user-center/users/{id}",
+         *                 UserDTO.class, userId
+         *         );
          */
 
         Integer userId = share.getUserId();
-        UserDTO userDTO = restTemplate.getForObject(
-                "http://user-center/users/{id}",
-                UserDTO.class, userId
-        );
+
+        UserDTO userDTO = userCenterFeignClient.findById(userId);
+
+
         log.info(userDTO.toString());
 
 
