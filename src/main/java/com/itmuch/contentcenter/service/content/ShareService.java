@@ -31,7 +31,7 @@ public class ShareService {
     @Resource
     private DiscoveryClient discoveryClient;
 
-    public ShareDTO findById(Integer id){
+    public ShareDTO findById(Integer id) {
 
 
         Share share = shareMapper.selectByPrimaryKey(id);
@@ -48,14 +48,14 @@ public class ShareService {
 
         int randomInt = ThreadLocalRandom.current().nextInt(targetUrls.size());
 
-
-
-
+        String targetUrl = targetUrls.get(randomInt);
+        log.info("获取的 TargetUrl", targetUrl);
         Integer userId = share.getUserId();
-        log.info("userId {}",userId);
+
+        log.info("userId {}", userId);
         UserDTO userDTO = restTemplate.getForObject(
-                targetUrls.get(randomInt),
-                UserDTO.class,userId
+                targetUrl,
+                UserDTO.class, userId
         );
         log.info(userDTO.toString());
 
@@ -63,7 +63,7 @@ public class ShareService {
         ShareDTO shareDTO = new ShareDTO();
 
 
-        BeanUtils.copyProperties(share,shareDTO);
+        BeanUtils.copyProperties(share, shareDTO);
         shareDTO.setWxNickname(userDTO.getWxNickname());
 
         return shareDTO;
@@ -76,7 +76,7 @@ public class ShareService {
 
         ResponseEntity<String> forObject = restTemplate.getForEntity(
                 "http://localhost:8080/users/{id}",
-                String.class,1
+                String.class, 1
         );
 
         System.out.println("forObject = " + forObject.getBody());
@@ -85,9 +85,6 @@ public class ShareService {
 
 
     }
-
-
-
 
 
 }
