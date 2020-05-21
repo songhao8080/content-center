@@ -16,6 +16,8 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -37,16 +39,22 @@ public class ShareService {
         // 获取用户中心所有实例
         List<ServiceInstance> instances = discoveryClient.getInstances("user-center");
 
-        String targetUrl = instances.stream()
+        /**
+         * 获取用户中心所有的实例地址
+         */
+        List<String> targetUrls = instances.stream()
                 .map(instance -> instance.getUri().toString() + "/users/{id}")
-                .findFirst().orElseThrow(() -> new IllegalArgumentException("未找到实例"));
+                .collect(Collectors.toList());
 
-        log.info("请求地址{}",targetUrl);
+        int randomInt = ThreadLocalRandom.current().nextInt(targetUrls.size());
+
+
+
 
         Integer userId = share.getUserId();
         log.info("userId {}",userId);
         UserDTO userDTO = restTemplate.getForObject(
-                targetUrl,
+                targetUrls.get(randomInt),
                 UserDTO.class,userId
         );
         log.info(userDTO.toString());
